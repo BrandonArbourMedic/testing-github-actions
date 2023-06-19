@@ -15,6 +15,7 @@ jobs:
     
     - name: Build docker image
       run: |
+        export IMAGE_NAME=arbourb/test_website
         docker build . --file Dockerfile --tag $IMAGE_NAME
     
     - name: Push to Docker Hub
