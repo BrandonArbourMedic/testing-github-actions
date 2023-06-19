@@ -13,7 +13,8 @@ jobs:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
     
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
@@ -25,6 +26,14 @@ jobs:
         sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
         trivy image $IMAGE_NAME --exit-code 0 --severity MEDIUM,HIGH --ignore-unfixed
         trivy image $IMAGE_NAME --exit-code 1 --severity CRITICAL --ignore-unfixed
+
+    - name: Scan with Snyk
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: |
+        npm install -g snyk
+        snyk auth $SNYK_TOKEN
+        snyk container test $IMAGE_NAME --fail-on=all --exclude-base-image-vulns --severity-threshold=high
 
 
     - name: Push to Docker Hub
