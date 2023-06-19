@@ -15,11 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: export IMAGE_NAME=arbourb/testWebSite:latest
-           docker build . --file Dockerfile -t $IMAGE_NAME
+      run: 
+        export $IMAGE_NAME=arbourb/testWebSite:$(date +%s)
+        docker build . --file Dockerfile --tag testWebSite:$(date +%s)
     - name: Scan with Trivy
-      run: export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-           wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb
-           dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
-           trivy image $IMAGE_NAME --exit-code 0 --severity MEDIUM,HIGH --ignore-unfixed
-           trivy image $IMAGE_NAME --exit-code 1 --severity CRITICAL --ignore-unfixed
+      run: 
+        export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+        wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb
+        dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
+        trivy image $IMAGE_NAME --exit-code 0 --severity MEDIUM,HIGH --ignore-unfixed
+        trivy image $IMAGE_NAME --exit-code 1 --severity CRITICAL --ignore-unfixed
