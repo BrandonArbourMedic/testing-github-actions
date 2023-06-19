@@ -24,4 +24,5 @@ jobs:
     - name: Push to Docker Hub
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASS
+        export IMAGE_NAME=$DOCKER_USER/test_website:latest
         docker push $IMAGE_NAME
