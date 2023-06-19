@@ -7,8 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-
-  build:
+  build_and_push:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
@@ -19,6 +18,15 @@ jobs:
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
     
+    - name: Scan with Trivy
+      run: |
+        export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+        wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb
+        dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
+        trivy image $IMAGE_NAME --exit-code 0 --severity MEDIUM,HIGH --ignore-unfixed
+        trivy image $IMAGE_NAME --exit-code 1 --severity CRITICAL --ignore-unfixed
+
+
     - name: Push to Docker Hub
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
