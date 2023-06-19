@@ -18,7 +18,7 @@ jobs:
     
     - name: Build docker image
       run: |
-        export IMAGE_NAME=$DOCKER_USER/test_website
+        export IMAGE_NAME=$DOCKER_USER/test_website:latest
         docker build . --file Dockerfile --tag $IMAGE_NAME
     
     - name: Push to Docker Hub
