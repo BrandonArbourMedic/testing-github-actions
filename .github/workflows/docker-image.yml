@@ -11,18 +11,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
-      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+
     steps:
     - uses: actions/checkout@v3
     
     - name: Build docker image
-      run: |
-        export IMAGE_NAME=$DOCKER_USER/test_website:latest
-        docker build . --file Dockerfile --tag $IMAGE_NAME
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME
     
     - name: Push to Docker Hub
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASS
-        export IMAGE_NAME=$DOCKER_USER/test_website:latest
         docker push $IMAGE_NAME
