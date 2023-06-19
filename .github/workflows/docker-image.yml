@@ -19,6 +19,9 @@ jobs:
         docker build . --file Dockerfile --tag $IMAGE_NAME
     
     - name: Push to Docker Hub
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASS
+        docker login -u $DOCKER_USER --password--stdin $DOCKER_PASS
         docker push $IMAGE_NAME
