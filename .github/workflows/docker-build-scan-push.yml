@@ -1,4 +1,4 @@
-name: Build Docker image, then push to Docker Hub
+name: Build Docker image, scan with Snyk & Trivy, then push to Docker Hub
 
 on:
   push:
