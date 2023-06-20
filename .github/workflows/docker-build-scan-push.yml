@@ -25,7 +25,7 @@ jobs:
         wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb
         sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
         trivy image $IMAGE_NAME --exit-code 0 --severity MEDIUM,HIGH --ignore-unfixed
-        trivy image $IMAGE_NAME --exit-code 0 --severity CRITICAL --ignore-unfixed
+        trivy image $IMAGE_NAME --exit-code 1 --severity CRITICAL --ignore-unfixed
 
     - name: Scan with Snyk
       env:
