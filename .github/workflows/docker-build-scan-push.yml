@@ -15,7 +15,16 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Install Gitleaks
+      run: |
+        git clone https://github.com/gitleaks/gitleaks.git
+        cd gitleaks
+        make build
     
+    - name: Scan with Gitleaks
+      run: gitleaks detect -s . -v --redact
+
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
     
