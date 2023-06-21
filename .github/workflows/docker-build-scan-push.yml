@@ -5,14 +5,14 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
-  gitleaks_scan:
+jobs:    
+  build_scan_push:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
 
     steps:
-    - name: Checkout full repository history
+    - name: Checkout repository
       uses: actions/checkout@v3
       with:
         fetch-depth: '0'
@@ -25,18 +25,7 @@ jobs:
         sudo mv gitleaks /usr/local/bin/
 
     - name: Run Gitleaks
-      run: |
-        git log -p
-        gitleaks detect -s . -v --redact
-    
-  build_scan_push:
-    runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      run: gitleaks detect -s . -v --redact
     
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
