@@ -1,4 +1,4 @@
-name: Build Docker image, scan with Snyk & Trivy, then push to Docker Hub
+name: Scan for Secrets. build Docker image, scan with Snyk & Trivy, then push to Docker Hub
 on:
   push:
     branches: [ "main" ]
@@ -17,15 +17,13 @@ jobs:
       with:
         fetch-depth: '0'
 
-    - name: Install Gitleaks
+    - name: Scan with Gitleaks
       run: |
         export GITLEAKS_VERSION=$(wget -qO - "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
         wget -q https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz
         tar -xvf gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz
         sudo mv gitleaks /usr/local/bin/
-
-    - name: Run Gitleaks
-      run: gitleaks detect -s . -v --redact
+        gitleaks detect -s . -v --redact
     
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
@@ -44,8 +42,7 @@ jobs:
       run: |
         npm install -g snyk
         snyk auth $SNYK_TOKEN
-        snyk container test $IMAGE_NAME --fail-on=all --exclude-base-image-vulns --severity-threshold=critical
-
+        snyk container test $IMAGE_NAME --fail-on=all --exclude-base-image-vulns --severity-threshold=high
 
     - name: Push to Docker Hub
       env:
