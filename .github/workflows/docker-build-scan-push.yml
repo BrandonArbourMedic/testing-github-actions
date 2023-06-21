@@ -19,8 +19,8 @@ jobs:
     - name: Install Gitleaks
       run: |
         export GITLEAKS_VERSION=$(wget -qO - "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
-        wget -q https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_arm64.tar.gz
-        tar -xvf gitleaks_${GITLEAKS_VERSION}_linux_arm64.tar.gz
+        wget -q https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz
+        tar -xvf gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz
         sudo mv gitleaks /usr/local/bin/
 
     - name: Run Gitleaks
