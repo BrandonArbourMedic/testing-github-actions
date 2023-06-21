@@ -25,7 +25,7 @@ jobs:
 
     - name: Run Gitleaks
       run: |
-        ls -lh
+        git log -p
         gitleaks detect -s . -v --redact
     
     - name: Build docker image
