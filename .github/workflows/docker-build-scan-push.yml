@@ -24,7 +24,9 @@ jobs:
         sudo mv gitleaks /usr/local/bin/
 
     - name: Run Gitleaks
-      run: gitleaks detect -s . -v --redact
+      run: |
+        ls -lh
+        gitleaks detect -s . -v --redact
     
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
