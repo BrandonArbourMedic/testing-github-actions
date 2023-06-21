@@ -1,5 +1,4 @@
 name: Build Docker image, scan with Snyk & Trivy, then push to Docker Hub
-
 on:
   push:
     branches: [ "main" ]
@@ -7,14 +6,16 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build_scan_push:
+  gitleaks_scan:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ vars.IMAGE_NAME }}
 
     steps:
-    - name: Checkout repository
+    - name: Checkout full repository history
       uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
 
     - name: Install Gitleaks
       run: |
@@ -27,6 +28,15 @@ jobs:
       run: |
         git log -p
         gitleaks detect -s . -v --redact
+    
+  build_scan_push:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     
     - name: Build docker image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
