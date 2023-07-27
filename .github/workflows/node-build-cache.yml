@@ -11,6 +11,8 @@ jobs:
 
             - name: Setup Node
               uses: actions/setup-node@v3
+              with:
+                cache: 'npm'
 
             - name: Build Project
               run: npm install
