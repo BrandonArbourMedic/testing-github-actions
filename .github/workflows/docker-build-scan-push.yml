@@ -34,7 +34,6 @@ jobs:
     
     - name: Build docker image
       run: |
-        pwd
         docker build . --file Dockerfile --tag $IMAGE_NAME'
         ls -lh
 
