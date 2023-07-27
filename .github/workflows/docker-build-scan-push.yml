@@ -34,7 +34,8 @@ jobs:
     
     - name: Build docker image
       run: |
-        docker build . --file Dockerfile --tag $IMAGE_NAME'
+        pwd
+        docker build . --file Dockerfile --tag $IMAGE_NAME
         ls -lh
 
 #    - name: Save docker image to cache
