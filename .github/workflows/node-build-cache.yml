@@ -1,0 +1,19 @@
+name: Scan for Secrets. build Docker image, scan with Snyk & Trivy, then push to Docker Hub
+on: workflow_dispatch
+
+jobs:
+    node-build-cache:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+
+            - name: Build Project
+              run: npm ci
+            
+            - name: Test Project
+              run: npm test
