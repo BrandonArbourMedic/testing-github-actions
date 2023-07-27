@@ -1,4 +1,4 @@
-name: Scan for Secrets. build Docker image, scan with Snyk & Trivy, then push to Docker Hub
+name: Testing NPM Caching
 on: workflow_dispatch
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
               uses: actions/setup-node@v3
 
             - name: Build Project
-              run: npm ci
+              run: npm install
             
             - name: Test Project
               run: npm test
