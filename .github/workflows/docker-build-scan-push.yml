@@ -24,27 +24,10 @@ jobs:
         tar -xvf gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz
         sudo mv gitleaks /usr/local/bin/
         gitleaks detect -s . -v --redact
-
-#    - name: Restore cached docker image
-#      id: cache-docker-restore
-#      uses: actions/cache/restore@v3
-#      with:
-#        path:
-#        key:
     
     - name: Build docker image
-      run: |
-        pwd
-        docker build . --file Dockerfile --cache-from=type=local,src=./cache . --cache-to=type=local,dest=./cache . --tag $IMAGE_NAME
-        ls -lh
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
-#    - name: Save docker image to cache
-#      id: cache-docker-save
-#      uses: actions/cache/save@v3
-#      with:
-#        path:
-#        key: ${{ steps.cache-docker-restore.outputs.cache-primary-key }}
-    
     - name: Scan with Trivy
       run: |
         export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
