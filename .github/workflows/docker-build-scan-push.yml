@@ -39,7 +39,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         push: false
-        tags: $IMAGE_NAME
+        tags: ${IMAGE_NAME}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
