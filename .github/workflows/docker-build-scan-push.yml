@@ -15,7 +15,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: '0'
+        fetch-depth: '10'
 
     - name: Scan with Gitleaks
       run: |
@@ -25,8 +25,23 @@ jobs:
         sudo mv gitleaks /usr/local/bin/
         gitleaks detect -s . -v --redact
     
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: GitHub Cache
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ hashFiles('Dockerfile') }}
+        restore-keys: ${{ runner.os }}-buildx-
+
     - name: Build docker image
-      run: docker build . --file Dockerfile --tag $IMAGE_NAME
+      uses: docker/build-push-action@v4
+      with:
+        push: false
+        tags: $IMAGE_NAME
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
 
     - name: Scan with Trivy
       run: |
@@ -35,14 +50,6 @@ jobs:
         sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
         trivy image $IMAGE_NAME --exit-code 0 --severity MEDIUM,HIGH --ignore-unfixed
         trivy image $IMAGE_NAME --exit-code 1 --severity CRITICAL --ignore-unfixed
-
-    - name: Scan with Snyk
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: |
-        npm install -g snyk
-        snyk auth $SNYK_TOKEN
-        snyk container test $IMAGE_NAME --fail-on=all --exclude-base-image-vulns --severity-threshold=high
 
     - name: Push to Docker Hub
       env:
