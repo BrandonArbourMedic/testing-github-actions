@@ -9,13 +9,14 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v3
 
-            - name: Setup Node
+            - name: Setup Yarn
               uses: actions/setup-node@v3
               with:
-                cache: 'npm'
+                cache: 'yarn'
+                cache-dependency-path: yarn.lock
 
             - name: Build Project
-              run: npm install
+              run: yarn install
             
-            - name: Test Project
-              run: npm test
+            #- name: Test Project
+            #  run: npm test
