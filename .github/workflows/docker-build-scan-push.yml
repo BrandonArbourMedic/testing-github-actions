@@ -25,8 +25,8 @@ jobs:
         sudo mv gitleaks /usr/local/bin/
         gitleaks detect -s . -v --redact
     
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+    #- name: Set up Docker Buildx
+    #  uses: docker/setup-buildx-action@v2
 
     - name: Build docker image
       uses: docker/build-push-action@v4
